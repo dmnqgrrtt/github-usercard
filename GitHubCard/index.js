@@ -3,6 +3,17 @@
            https://api.github.com/users/<your name>
 */
 
+const cards = document.querySelector('.cards')
+
+axios.get('https://api.github.com/users/dmnqgrrtt')
+.then(response => {
+  console.log('response', response.data)
+  const newGitCard = gitCard(response.data)
+  cards.appendChild(newGitCard)
+  
+})
+
+
 /* Step 2: Inspect and study the data coming back, this is YOUR 
    github info! You will need to understand the structure of this 
    data in order to use it to build your component function 
@@ -24,7 +35,15 @@
           user, and adding that card to the DOM.
 */
 
-const followersArray = [];
+const followersArray = ['tetondan', 'dustinmyers', 'justsml', 'luishrd','bigknell' ];
+
+followersArray.forEach((handle) => {
+  axios.get(`https://api.github.com/users/${handle}`)
+  .then(response => {
+    const newGitCard = gitCard(response.data)
+    cards.appendChild(newGitCard)
+  })
+})
 
 /* Step 3: Create a function that accepts a single object as its only argument,
           Using DOM methods and properties, create a component that will return the following DOM element:
@@ -45,6 +64,55 @@ const followersArray = [];
 </div>
 
 */
+
+const gitCard = (gitData) => {
+
+  //elements
+  const card = document.createElement('div')
+  const profilePic = document.createElement('img')
+  const cardInfo = document.createElement('div')
+  const name = document.createElement('h3')
+  const username = document.createElement('p')
+  const location = document.createElement('p')
+  const profile = document.createElement('p')
+  const webAddress = document.createElement('a')
+  const followers = document.createElement('p')
+  const following = document.createElement('p')
+  const bio = document.createElement('p')
+
+  //strcuture
+  card.appendChild(profilePic)
+  card.appendChild(cardInfo)
+  cardInfo.appendChild(name)
+  cardInfo.appendChild(username)
+  cardInfo.appendChild(location)
+  cardInfo.appendChild(profile)
+  cardInfo.appendChild(followers)
+  cardInfo.appendChild(following)
+  cardInfo.appendChild(bio)
+  profile.appendChild(webAddress)
+
+  //classes
+  card.classList.add('card')
+  cardInfo.classList.add('card-info')
+  name.classList.add('name')
+  username.classList.add('username')
+
+  //content
+  profilePic.src = gitData.avatar_url;
+  name.textContent = gitData.name;
+  username.textContent = gitData.login;
+  location.textContent = `Location: ${gitData.location}`;
+  webAddress.href = gitData.html_url;
+  webAddress.textContent = gitData.html_url;
+  profile.insertAdjacentHTML('afterbegin', 'Profile: ')
+  followers.textContent = `Followers: ${gitData.followers}`;
+  following.textContent = `Following: ${gitData.following}`;
+  bio.textContent = `Bio: ${gitData.bio}`;
+
+  return card;
+
+}
 
 /* List of LS Instructors Github username's: 
   tetondan
